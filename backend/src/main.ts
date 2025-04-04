@@ -6,9 +6,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
   app.useGlobalPipes(new ValidationPipe({
-    transform: true, // Automatically transform plain objects into DTOs
-    whitelist: true, // Strip properties that do not have decorators
-    forbidNonWhitelisted: true, // Throw an error if there are extra properties
+    transform: true, 
+    whitelist: true,
+    forbidNonWhitelisted: true,
   }));
   await app.listen(process.env.PORT ?? 3000);
 }
