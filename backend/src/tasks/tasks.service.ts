@@ -1,26 +1,74 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { Model } from 'mongoose';
+import { Task } from './entities/task.entity';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class TasksService {
-  create(createTaskDto: CreateTaskDto) {
-    return 'This action adds a new task';
+  constructor(@InjectModel('Task') private readonly taskModel: Model<Task>) {}
+
+  async create(createTaskDto: CreateTaskDto): Promise<Task> {
+    const user = new this.taskModel(createTaskDto);
+    return user.save();
   }
 
-  findAll() {
-    return `This action returns all tasks`;
+  async findAll(): Promise<Task[]> {
+    return this.taskModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  async findOne(id: string): Promise<Task> {
+    try {
+      const task = await this.taskModel.findById(id).exec();
+      if (!task) {
+        throw new NotFoundException(`Task with ID ${id} not found`);
+      }
+
+      return task;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        `Failed to retrieve task: ${err.message}`,
+      );
+    }
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  async update(id: string, updateTaskDto: UpdateTaskDto) {
+    try {
+      const task = await this.taskModel.findById(id).exec();
+      if (!task) {
+        throw new NotFoundException(`Task with ID ${id} not found`);
+      }
+
+      await this.taskModel
+        .findByIdAndUpdate(id, updateTaskDto, { new: true })
+        .exec();
+
+      return { message: 'Task updated successfully' };
+    } catch (err) {
+      throw new InternalServerErrorException(
+        `Failed to retrieve task: ${err.message}`,
+      );
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+  async remove(id: string) {
+    try {
+      const task = await this.taskModel.findByIdAndDelete(id).exec();
+
+      if (!task) {
+        throw new NotFoundException(`Task with ID ${id} not found`);
+      }
+
+      return { message: 'Task deleted successfully' };
+    } catch (err) {
+      throw new InternalServerErrorException(
+        `Failed to delete task: ${err.message}`,
+      );
+    }
   }
 }
