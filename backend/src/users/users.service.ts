@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
@@ -9,12 +9,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class UserService {
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto){
     const user = new this.userModel(createUserDto);
     return user.save();
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     const updatedUser = await this.userModel.findByIdAndUpdate(
       id,
       updateUserDto,
@@ -26,7 +26,17 @@ export class UserService {
     return updatedUser;
   }
 
-  async get(): Promise<User[]> {
+  async findAll(){
     return this.userModel.find();
+  }
+
+  async findOne(id: string){
+    const user = this.userModel.findById(id);
+    if (!user) throw new NotFoundException('could not find the user');
+    return user;
+  }
+
+  async remove(id: string) {
+    return this.userModel.findByIdAndDelete(id);
   }
 }
