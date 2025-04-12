@@ -32,8 +32,12 @@ export class AuthService {
         secret: process.env.JWT_SECRET_KEY,
       },
     );
-    return { token };
-  }
+    return { 
+      status: true, 
+      message: "User Logged In Successfully",
+      user,
+      token 
+    };  }
   
   async signUp(signupDto: SignUpUserDto) {
     const { password } = signupDto;
@@ -50,9 +54,14 @@ export class AuthService {
       { id: user.id },
       {
         secret: process.env.JWT_SECRET_KEY,
-        expiresIn: process.env.JWT_EXPIRATION_TIME,
       },
     );
-    return { token };
+
+    return { 
+      status: true, 
+      message: "User Created Successfully",
+      user,
+      token 
+    };
   }
 }
