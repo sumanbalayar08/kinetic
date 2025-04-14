@@ -8,7 +8,7 @@ export default function TabLayout() {
   const { token } = authContext;
 
   if (!token) {
-    return <Redirect href="/signin" />;
+    return <Redirect href="/(auth)/signin" />;
   }
 
   return (

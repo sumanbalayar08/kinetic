@@ -4,6 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Button,
 } from "react-native";
 import { useContext, useState } from "react";
 import { router } from "expo-router";
@@ -50,7 +51,7 @@ export default function SignInScreen() {
 
   const handleSignIn = async () => {
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
     try {
       const response = await fetch(`${API_URL}/auth/login`, {
@@ -91,43 +92,56 @@ export default function SignInScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
+      <Text style={styles.title}>Login Here</Text>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={[styles.input, errors.email && styles.inputError]}
-          placeholder="Email"
-          value={email}
-          onChangeText={(text) => {
-            setEmail(text);
-            if (errors.email) {
-              setErrors({ ...errors, email: undefined });
-            }
-          }}
-          autoCapitalize="none"
-          keyboardType="email-address"
-        />
-        {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+      <View>
+        <Text style={styles.subtitle}>Welcome back you've</Text>
+        <Text style={styles.subtitle}>missed</Text>
       </View>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={[styles.input, errors.password && styles.inputError]}
-          placeholder="Password"
-          value={password}
-          onChangeText={(text) => {
-            setPassword(text);
-            if (errors.password) {
-              setErrors({ ...errors, password: undefined });
-            }
-          }}
-          secureTextEntry
-        />
-        {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+      <View style={{ marginTop: 20 }}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, errors.email && styles.inputError]}
+            placeholder="Email"
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+              if (errors.email) {
+                setErrors({ ...errors, email: undefined });
+              }
+            }}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, errors.password && styles.inputError]}
+            placeholder="Password"
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+              if (errors.password) {
+                setErrors({ ...errors, password: undefined });
+              }
+            }}
+            secureTextEntry
+          />
+          {errors.password && (
+            <Text style={styles.errorText}>{errors.password}</Text>
+          )}
+        </View>
       </View>
 
-      <TouchableOpacity 
-        style={[styles.button, isLoading && styles.buttonDisabled]} 
+      <View style={{ alignItems: "flex-end" }}>
+        <Text style={styles.forgotPassword}>Forgot your password?</Text>
+      </View>
+
+      <TouchableOpacity
+        style={[styles.button, isLoading && styles.buttonDisabled]}
         onPress={handleSignIn}
         disabled={isLoading}
       >
@@ -137,7 +151,7 @@ export default function SignInScreen() {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push("/signup")}>
-        <Text style={styles.link}>Don't have an account? Sign Up</Text>
+        <Text style={styles.link}>Don't have an account</Text>
       </TouchableOpacity>
     </View>
   );
@@ -149,12 +163,21 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: "center",
     backgroundColor: "#fff",
+    gap: "18",
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    color: "#2563EB",
+  },
+  subtitle: {
+    fontSize: 20,
+    color: "black",
+    textAlign: "center",
+    paddingHorizontal: 10,
+    fontWeight: "800",
   },
   inputContainer: {
     marginBottom: 15,
@@ -176,7 +199,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   button: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#2563EB",
     padding: 15,
     borderRadius: 8,
     alignItems: "center",
@@ -191,8 +214,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   link: {
-    color: "#007AFF",
     textAlign: "center",
     marginTop: 20,
+    fontWeight: "800",
+  },
+  forgotPassword: {
+    color: "#2563EB",
+    fontSize: 14,
+    fontWeight: "bold",
   },
 });

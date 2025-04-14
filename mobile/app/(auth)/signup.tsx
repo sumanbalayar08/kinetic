@@ -9,7 +9,7 @@ import { useContext, useState } from "react";
 import { router } from "expo-router";
 import { API_URL } from "../../constants";
 import AuthContext from "../../context/authContext";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 
 interface ValidationErrors {
   name?: string;
@@ -58,7 +58,7 @@ export default function SignUpScreen() {
 
   const handleSignUp = async () => {
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
     try {
       const response = await fetch(`${API_URL}/auth/signup`, {
@@ -80,8 +80,8 @@ export default function SignUpScreen() {
       }
 
       Toast.show({
-        type: 'success', 
-        text2: 'User Signed Up Successfully',
+        type: "success",
+        text2: "User Signed Up Successfully",
       });
 
       await login(data?.token, data?.user);
@@ -89,7 +89,7 @@ export default function SignUpScreen() {
       router.replace("/(tabs)/(home)");
     } catch (err: unknown) {
       Toast.show({
-        type: 'error',
+        type: "error",
         text2: err instanceof Error ? err.message : "An error occurred",
       });
     } finally {
@@ -101,57 +101,68 @@ export default function SignUpScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Create Account</Text>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={[styles.input, errors.name && styles.inputError]}
-          placeholder="Name"
-          value={name}
-          onChangeText={(text) => {
-            setName(text);
-            if (errors.name) {
-              setErrors({ ...errors, name: undefined });
-            }
-          }}
-          autoCapitalize="none"
-        />
-        {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
+      <View>
+        <Text style={styles.subtitle}>
+          Create an account so you can explore all the
+        </Text>
+        <Text style={styles.subtitle}>productivity tools</Text>
       </View>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={[styles.input, errors.email && styles.inputError]}
-          placeholder="Email"
-          value={email}
-          onChangeText={(text) => {
-            setEmail(text);
-            if (errors.email) {
-              setErrors({ ...errors, email: undefined });
-            }
-          }}
-          autoCapitalize="none"
-          keyboardType="email-address"
-        />
-        {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+      <View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, errors.name && styles.inputError]}
+            placeholder="Name"
+            value={name}
+            onChangeText={(text) => {
+              setName(text);
+              if (errors.name) {
+                setErrors({ ...errors, name: undefined });
+              }
+            }}
+            autoCapitalize="none"
+          />
+          {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, errors.email && styles.inputError]}
+            placeholder="Email"
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+              if (errors.email) {
+                setErrors({ ...errors, email: undefined });
+              }
+            }}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, errors.password && styles.inputError]}
+            placeholder="Password"
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+              if (errors.password) {
+                setErrors({ ...errors, password: undefined });
+              }
+            }}
+            secureTextEntry
+          />
+          {errors.password && (
+            <Text style={styles.errorText}>{errors.password}</Text>
+          )}
+        </View>
       </View>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={[styles.input, errors.password && styles.inputError]}
-          placeholder="Password"
-          value={password}
-          onChangeText={(text) => {
-            setPassword(text);
-            if (errors.password) {
-              setErrors({ ...errors, password: undefined });
-            }
-          }}
-          secureTextEntry
-        />
-        {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
-      </View>
-
-      <TouchableOpacity 
-        style={[styles.button, isSubmitting && styles.buttonDisabled]} 
+      <TouchableOpacity
+        style={[styles.button, isSubmitting && styles.buttonDisabled]}
         onPress={handleSignUp}
         disabled={isSubmitting}
       >
@@ -161,7 +172,7 @@ export default function SignUpScreen() {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push("/signin")}>
-        <Text style={styles.link}>Already have an account? Sign In</Text>
+        <Text style={styles.link}>Already have an account</Text>
       </TouchableOpacity>
     </View>
   );
@@ -173,12 +184,20 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: "center",
     backgroundColor: "#fff",
+    gap: "22",
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "bold",
-    marginBottom: 20,
     textAlign: "center",
+    color: "#2563EB",
+  },
+  subtitle: {
+    fontSize: 15,
+    color: "black",
+    textAlign: "center",
+    paddingHorizontal: 10,
+    fontWeight: "800",
   },
   inputContainer: {
     marginBottom: 15,
@@ -200,7 +219,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   button: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#2563EB",
     padding: 15,
     borderRadius: 8,
     alignItems: "center",
@@ -215,8 +234,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   link: {
-    color: "#007AFF",
     textAlign: "center",
     marginTop: 20,
+    fontWeight: "800"
   },
 });
